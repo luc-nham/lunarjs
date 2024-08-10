@@ -40,4 +40,126 @@ interface Jdn {
   getLocalMidnightJdn(): number;
 }
 
-export { Jdn };
+/**
+ * Xác định đối tượng lưu trữ thời gian cơ bản, được sử dụng để tạo đầu vào nhanh chóng hoặc đầu ra
+ * đơn giản mà không cần các bước khởi tạo phức tạp hay các phương thức không cần thiết. Ví dụ, một
+ * bộ chuyển đổi hoặc kho lưu trữ có thể yêu cầu nhiều giá trị thời gian cho quá trình khởi tạo, khi
+ * đó, truyền một đối tượng đơn giản này vào constructor sẽ thuận tiện hơn việc gọi nhiều setter.
+ *
+ * Mặc định, loại đối tượng này hỗ trợ các dạng giá trị thời gian theo lịch Gregory.
+ */
+type SimpleDateTime = {
+  /**
+   * Ngày
+   */
+  day?: number;
+
+  /**
+   * Tháng
+   */
+  month?: number;
+
+  /**
+   * Năm
+   */
+  year?: number;
+
+  /**
+   * Giờ
+   */
+  hour?: number;
+
+  /**
+   * Phút
+   */
+  minute?: number;
+
+  /**
+   * Giây
+   */
+  second?: number;
+
+  /**
+   * Số giây bù chênh lệch giữa giờ địa phương so với UTC
+   */
+  offset?: number;
+};
+
+/**
+ * Kho lưu trữ các giá trị thời gian cơ bản
+ */
+interface DateTimeStorage {
+  /**
+   * Đọc hoặc ghi giá trị ngày:
+   * - Khi không có tham số, trả về ngày ở định dạng số.
+   * - Khi có tham số, ngày sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param d number Đặt giá trị mới của ngày
+   */
+  day(): number;
+  day(d: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị tháng:
+   * - Khi không có tham số, trả về tháng ở định dạng số.
+   * - Khi có tham số, tháng sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param m number Đặt giá trị mới của tháng
+   */
+  month(): number;
+  month(m: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị năm:
+   * - Khi không có tham số, trả về năm ở định dạng số.
+   * - Khi có tham số, năm sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param y number Đặt giá trị mới của năm
+   */
+  year(): number;
+  year(y: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị giờ:
+   * - Khi không có tham số, trả về giờ ở định dạng số.
+   * - Khi có tham số, giờ sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param h number Đặt giá trị mới của giờ
+   */
+  hour(): number;
+  hour(h: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị phút:
+   * - Khi không có tham số, trả về phút ở định dạng số.
+   * - Khi có tham số, phút sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param i number Đặt giá trị mới của phút
+   */
+  minute(): number;
+  minute(i: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị giây:
+   * - Khi không có tham số, trả về giây ở định dạng số.
+   * - Khi có tham số, giây sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param s number Đặt giá trị mới của giây
+   */
+  second(): number;
+  second(s: number): this;
+
+  /**
+   * Đọc hoặc ghi giá trị bù chênh lệch giữa giờ địa phương và UTC:
+   * - Khi không có tham số, trả về phần bù ở định dạng số.
+   * - Khi có tham số, phần bù sẽ được thay thế bằng giá trị của tham số, trả về đối tượng gốc.
+   *
+   * @param o number Đặt giá trị mới của phần bù chênh lệch
+   */
+  offset(): number;
+  offset(o: number): this;
+}
+
+type DateTimeKeyProp = "_d" | "_m" | "_y" | "_h" | "_i" | "_s" | "_o";
+
+export { Jdn, SimpleDateTime, DateTimeStorage, DateTimeKeyProp };
