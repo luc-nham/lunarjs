@@ -58,7 +58,7 @@ class GregoryDateTimeStorage extends BaseDateTimeStorage {
    * cấp, mặc định sẽ sử dụng thời gian hiện tại của hệ thống. Các giá trị trả về được tính theo
    * giờ địa phương.
    *
-   * @param date Đối tượng Javascript Date
+   * @param date Date | undefined
    * @returns
    */
   public static fromDate(date?: Date) {
