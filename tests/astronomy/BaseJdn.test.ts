@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { BaseJdn } from "../../src/jdn/BaseJdn";
+import { BaseJdn } from "../../src/astronomy/BaseJdn";
 import { GregoryDateTimeStorage } from "../../src/storages/GregoryDateTimeStorage";
 
 describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
