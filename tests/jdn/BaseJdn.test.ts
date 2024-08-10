@@ -1,5 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { BaseJdn } from "../../src/jdn/BaseJdn";
+import { GregoryDateTimeStorage } from "../../src/storages/GregoryDateTimeStorage";
 
 describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
   // Số ngày Julian tại thời điểm 1970-01-01T00:00:00Z0000
@@ -99,5 +100,27 @@ describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
      */
     jdn.setOffset(-43200);
     expect(jdn.getLocalMidnightJdn()).toBe(2440588.0);
+  });
+
+  /**
+   * @link https://aa.usno.navy.mil/calculated/juliandate?ID=AA&date=2020-01-01&era=AD&time=00%3A00%3A00.000&submit=Get+Date
+   */
+  test("Khởi tạo/chuyển đổi từ lịch Gregory", () => {
+    const date = new Date("2020-01-01T00:00:00+00:00");
+    const storage = GregoryDateTimeStorage.fromDate(date);
+
+    const jdn1 = BaseJdn.fromGregorian(date);
+    const jdn2 = BaseJdn.fromGregorian(storage);
+
+    expect(jdn1.getJdn()).toBe(2458849.5);
+    expect(jdn1.getJdn()).toBe(jdn2.getJdn());
+    expect(jdn1.getLocalMidnightJdn()).toBe(jdn2.getLocalMidnightJdn());
+
+    // Không có tham số giờ phút giây
+    const jdn3 = BaseJdn.fromGregorian(
+      new GregoryDateTimeStorage({ day: 1, month: 1, year: 2020 }),
+    );
+
+    expect(jdn3.getJdn()).toBe(2458849.5);
   });
 });

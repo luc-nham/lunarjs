@@ -1,3 +1,4 @@
+import { GregoryDateTimeStorage } from "../storages/GregoryDateTimeStorage";
 import { Jdn } from "../types";
 
 /**
@@ -113,6 +114,47 @@ class BaseJdn implements Jdn {
     }
 
     return this.localMidnightJdn;
+  }
+
+  /**
+   * Phương thức tĩnh hỗ trợ chuyển đổi một mốc thời gian lịch Gregory (Dương lịch) thành số ngày
+   * Julian tương ứng.
+   *
+   * Nếu đầu vào là giờ địa phương, số ngày Julian đầu ra sẽ vẫn luôn được đảm bảo tương ứng với UTC
+   * dựa trên phần bù chênh lệch.
+   */
+  public static fromGregorian(input: Date | GregoryDateTimeStorage) {
+    const date =
+      input instanceof Date ? GregoryDateTimeStorage.fromDate(input) : input;
+
+    const a = Math.floor((14 - date.month()) / 12);
+    const y = date.year() + 4800 - a;
+    const m = date.month() + 12 * a - 3;
+    const j =
+      date.day() +
+      Math.floor((153 * m + 2) / 5) +
+      365 * y +
+      Math.floor(y / 4) -
+      Math.floor(y / 100) +
+      Math.floor(y / 400) -
+      32045;
+
+    const f = parseFloat(
+      (
+        (((date.hour() - 12) % 24) * 3600 +
+          date.minute() * 60 +
+          date.second()) /
+        86400
+      ).toFixed(6),
+    );
+
+    let jdn = j + f;
+
+    if (date.offset() !== undefined && date.offset() !== 0) {
+      jdn -= parseFloat((date.offset() / 86400).toFixed(6));
+    }
+
+    return new this(jdn, date.offset());
   }
 }
 
