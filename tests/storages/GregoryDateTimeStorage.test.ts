@@ -40,7 +40,7 @@ describe("Kiểm tra kho lưu trữ Dương lịch - Grefory", () => {
     expect(() => storage.offset(50401)).toThrow();
   });
 
-  test("Chuyển đổi từ một đối tượng Date gốc của Javascript", () => {
+  test("Tạo kho lưu trữ từ một đối tượng Date gốc của Javascript", () => {
     // Khi có tham số đầu vào
     const date = new Date("2022-02-27T10:30:20");
     const s = GregoryDateTimeStorage.fromDate(date);
@@ -64,5 +64,19 @@ describe("Kiểm tra kho lưu trữ Dương lịch - Grefory", () => {
     expect(s2.minute()).toBe(d2.getMinutes());
     expect(s2.second()).toBe(d2.getSeconds());
     expect(s2.offset()).toBe(d2.getTimezoneOffset() * -60);
+  });
+
+  test("Tạo kho lưu trữ từ một đối tượng lưu trữ thời gian đơn giản", () => {
+    const storage = GregoryDateTimeStorage.fromDate({
+      day: 10,
+      month: 2,
+      year: 2021,
+      hour: 15,
+      minute: 30,
+      second: 55,
+      offset: 3600,
+    });
+
+    expect(storage).toBeDefined();
   });
 });

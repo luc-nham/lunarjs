@@ -1,4 +1,4 @@
-import { DateTimeKeyProp } from "../types";
+import { DateTimeKeyProp, SimpleDateTime } from "../types";
 import { BaseDateTimeStorage } from "./BaseDateTimeStorage";
 
 /**
@@ -61,21 +61,31 @@ class GregoryDateTimeStorage extends BaseDateTimeStorage {
    * @param date Date | undefined
    * @returns
    */
-  public static fromDate(date?: Date) {
+  public static fromDate(date?: Date | SimpleDateTime) {
     if (date === undefined) {
       date = new Date();
     }
 
     const storage = new this();
 
-    storage
-      .day(date.getDate())
-      .month(date.getMonth() + 1)
-      .year(date.getFullYear())
-      .hour(date.getHours())
-      .minute(date.getMinutes())
-      .second(date.getSeconds())
-      .offset(date.getTimezoneOffset() * -60);
+    if (date instanceof Date) {
+      storage
+        .day(date.getDate())
+        .month(date.getMonth() + 1)
+        .year(date.getFullYear())
+        .hour(date.getHours())
+        .minute(date.getMinutes())
+        .second(date.getSeconds())
+        .offset(date.getTimezoneOffset() * -60);
+    } else {
+      if (date.day) storage.day(date.day);
+      if (date.month) storage.month(date.month);
+      if (date.year) storage.year(date.year);
+      if (date.hour) storage.hour(date.hour);
+      if (date.minute) storage.minute(date.minute);
+      if (date.second) storage.second(date.second);
+      if (date.offset) storage.offset(date.offset);
+    }
 
     return storage;
   }
