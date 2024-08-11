@@ -117,11 +117,13 @@ class BaseJdn implements Jdn {
   }
 
   /**
-   * Phương thức tĩnh hỗ trợ chuyển đổi một mốc thời gian lịch Gregory (Dương lịch) thành số ngày
-   * Julian tương ứng.
-   *
-   * Nếu đầu vào là giờ địa phương, số ngày Julian đầu ra sẽ vẫn luôn được đảm bảo tương ứng với UTC
-   * dựa trên phần bù chênh lệch.
+   * Tạo nhanh đối tượng mới (chuyển đổi) từ một mốc thời gian Dương lịch - Gregory đầu vào. Tham số
+   * có được hỗ trợ dưới 3 dạng:
+   * - GregoryDateTimeStorage: kho lưu trữ lịch Gregory với các cấu hình xác thực đã được thiết lập.
+   * - Date: lớp Date của Javascript, sẽ được chuyển tiếp qua một kho lưu trữ GregoryDateTimeStorage
+   * để chuyển đổi các dữ liệu cần thiết (số tháng, bù chênh lệnh UTC...) trước khi tiến hành xử lý.
+   * - Một đối tượng đơn giản với các mốc thời gian theo lịch Gregory, nó sẽ được chuyển tiếp qua
+   * một kho lưu trữ GregoryDateTimeStorage để xác thực trước khi tiến hành xử lý.
    */
   public static fromGregorian(
     input: Date | GregoryDateTimeStorage | SimpleDateTime,
