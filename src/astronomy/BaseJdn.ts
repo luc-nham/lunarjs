@@ -1,5 +1,5 @@
 import { GregoryDateTimeStorage } from "../storages/GregoryDateTimeStorage";
-import { Jdn } from "../types";
+import { Jdn, SimpleDateTime } from "../types";
 
 /**
  * Lớp truy xuất giá trị JDN cơ bản
@@ -123,9 +123,13 @@ class BaseJdn implements Jdn {
    * Nếu đầu vào là giờ địa phương, số ngày Julian đầu ra sẽ vẫn luôn được đảm bảo tương ứng với UTC
    * dựa trên phần bù chênh lệch.
    */
-  public static fromGregorian(input: Date | GregoryDateTimeStorage) {
+  public static fromGregorian(
+    input: Date | GregoryDateTimeStorage | SimpleDateTime,
+  ) {
     const date =
-      input instanceof Date ? GregoryDateTimeStorage.fromDate(input) : input;
+      input instanceof GregoryDateTimeStorage
+        ? input
+        : GregoryDateTimeStorage.fromDate(input);
 
     const a = Math.floor((14 - date.month()) / 12);
     const y = date.year() + 4800 - a;
