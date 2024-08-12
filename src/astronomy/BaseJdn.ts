@@ -117,6 +117,64 @@ class BaseJdn implements Jdn {
   }
 
   /**
+   * Chuyển đổi thành mốc lịch Gregory tương ứng.
+   */
+  public toGregorian() {
+    const storage: SimpleDateTime = {};
+    const jdn = this.getJdn() + Math.ceil(this.getOffset() / 86400);
+
+    // Ngày tháng năm
+    let j = Math.floor(jdn);
+
+    if (jdn - j >= 0.5) {
+      j += 1;
+    }
+
+    j -= 1721119;
+
+    let y = Math.floor((4 * j - 1) / 146097);
+    j = 4 * j - 1 - 146097 * y;
+
+    let d = Math.floor(j / 4);
+    j = Math.floor((4 * d + 3) / 1461);
+    d = 4 * d + 3 - 1461 * j;
+    d = Math.floor((d + 4) / 4);
+    let m = Math.floor((5 * d - 3) / 153);
+    d = 5 * d - 3 - 153 * m;
+    d = Math.floor((d + 5) / 5);
+    y = 100 * y + j;
+
+    if (m < 10) {
+      m += 3;
+    } else {
+      m -= 9;
+      y += 1;
+    }
+
+    storage.day = d;
+    storage.month = m;
+    storage.year = y;
+
+    // Giờ phút giây
+    const totalSec = Math.ceil(
+      (this.getJdn() - Math.floor(this.getJdn())) * 86400 +
+        this.getOffset() +
+        43200,
+    );
+
+    const h = Math.floor(totalSec / 3600) % 24;
+    const i = Math.floor(totalSec / 60) % 60;
+    const s = Math.floor(totalSec % 60);
+
+    storage.hour = h;
+    storage.minute = i;
+    storage.second = s;
+    storage.offset = this.getOffset();
+
+    return storage;
+  }
+
+  /**
    * Tạo nhanh đối tượng mới (chuyển đổi) từ một mốc thời gian Dương lịch - Gregory đầu vào. Tham số
    * có được hỗ trợ dưới 3 dạng:
    * - GregoryDateTimeStorage: kho lưu trữ lịch Gregory với các cấu hình xác thực đã được thiết lập.

@@ -123,4 +123,56 @@ describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
 
     expect(jdn3.getJdn()).toBe(2458849.5);
   });
+
+  test("Chuyển đổi số ngày Julian sang lịch Gregory", () => {
+    // 1970-01-01T00:00+0000
+    const jdn = new BaseJdn();
+    const gre = jdn.toGregorian();
+
+    expect(gre.day).toBe(1);
+    expect(gre.month).toBe(1);
+    expect(gre.year).toBe(1970);
+    expect(gre.hour).toBe(0);
+    expect(gre.minute).toBe(0);
+    expect(gre.second).toBe(0);
+    expect(gre.offset).toBe(0);
+
+    // 1970-01-01T00:00+0700 - 1969-12-31T17:00+0000 (jdn = 2440587.208333)
+    const jdn2 = BaseJdn.fromGregorian({
+      day: 1,
+      month: 1,
+      year: 1970,
+      offset: 25200,
+    });
+    const gre2 = jdn2.toGregorian();
+
+    expect(jdn2.getJdn()).toBe(2440587.208333);
+    expect(gre2.day).toBe(1);
+    expect(gre2.month).toBe(1);
+    expect(gre2.year).toBe(1970);
+    expect(gre2.hour).toBe(0);
+    expect(gre2.minute).toBe(0);
+    expect(gre2.second).toBe(0);
+    expect(gre2.offset).toBe(25200);
+
+    // 2020-10-10T23:59:59+00:00 (jdn = 2459133.499988)
+    const jdn3 = BaseJdn.fromGregorian({
+      day: 10,
+      month: 10,
+      year: 2020,
+      hour: 23,
+      minute: 59,
+      second: 59,
+    });
+    const gre3 = jdn3.toGregorian();
+
+    expect(jdn3.getJdn()).toBe(2459133.499988);
+    expect(gre3.day).toBe(10);
+    expect(gre3.month).toBe(10);
+    expect(gre3.year).toBe(2020);
+    expect(gre3.hour).toBe(23);
+    expect(gre3.minute).toBe(59);
+    expect(gre3.second).toBe(59);
+    expect(gre3.offset).toBe(0);
+  });
 });
