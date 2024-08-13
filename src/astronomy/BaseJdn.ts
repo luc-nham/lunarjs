@@ -183,9 +183,10 @@ class BaseJdn implements Jdn {
    * - Một đối tượng đơn giản với các mốc thời gian theo lịch Gregory, nó sẽ được chuyển tiếp qua
    * một kho lưu trữ GregoryDateTimeStorage để xác thực trước khi tiến hành xử lý.
    */
-  public static fromGregorian(
+  public static fromGregorian<T extends BaseJdn>(
+    this: new (jdn: number, offset: number) => T,
     input: Date | GregoryDateTimeStorage | SimpleDateTime,
-  ) {
+  ): T {
     const date =
       input instanceof GregoryDateTimeStorage
         ? input
