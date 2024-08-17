@@ -117,11 +117,16 @@ class BaseJdn implements Jdn {
   }
 
   /**
-   * Chuyển đổi thành mốc lịch Gregory tương ứng.
+   * Chuyển đổi một mốc ngày Julian thành lịch Gregory giờ địa phương. Phương thức này cho phép các
+   * lớp mở rộng có thể sử dụng linh hoạt khi cần thực hiện các phép chuyển đổi.
+   *
+   * @param jd      số ngày Julian - tuân thủ theo nguyên tắc: ngày mới bắt đầu vào 12 giờ trưa UTC
+   * @param offset  phần bù chênh lệch giờ địa phương so với UTC, tính bằng giây
+   * @returns       đối tượng chứa các thông tin về thời gian lịch Gregory
    */
-  public toGregorian() {
+  protected _toGregorian(jd: number, offset: number) {
     const storage: SimpleDateTime = {};
-    const jdn = this.getJdn() + Math.ceil(this.getOffset() / 86400);
+    const jdn = jd + Math.ceil(offset / 86400);
 
     // Ngày tháng năm
     let j = Math.floor(jdn);
@@ -156,11 +161,7 @@ class BaseJdn implements Jdn {
     storage.year = y;
 
     // Giờ phút giây
-    const totalSec = Math.ceil(
-      (this.getJdn() - Math.floor(this.getJdn())) * 86400 +
-        this.getOffset() +
-        43200,
-    );
+    const totalSec = Math.ceil((jd - Math.floor(jd)) * 86400 + offset + 43200);
 
     const h = Math.floor(totalSec / 3600) % 24;
     const i = Math.floor(totalSec / 60) % 60;
@@ -169,9 +170,18 @@ class BaseJdn implements Jdn {
     storage.hour = h;
     storage.minute = i;
     storage.second = s;
-    storage.offset = this.getOffset();
+    storage.offset = offset;
 
     return storage;
+  }
+
+  /**
+   * Chuyển đổi mốc ngày Julian thành mốc lịch Gregory tương ứng, hỗ trợ giờ, phút, giây và bù chênh
+   * lệnh với UTC. Nếu phần bù được thiết lập (thông qua khởi tạo đối tượng hoặc hàm setOffset...),
+   * đầu ra sẽ tương ứng với giờ địa phương. Nếu phần bù bằng 0 (tương ứng UTC), đầu ra sẽ là UTC.
+   */
+  public toGregorian() {
+    return this._toGregorian(this.getJdn(), this.getOffset());
   }
 
   /**
