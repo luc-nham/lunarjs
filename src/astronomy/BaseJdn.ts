@@ -22,7 +22,10 @@ class BaseJdn implements Jdn {
   }
 
   /**
-   * Đặt lại các giá trị cần tính toán động khi có các biến đổi của các tham số chính
+   * Phương thức này được gọi mỗi khi một trong các hành động dưới đây xảy ra, và sau khi giá trị
+   * mới đã được thay đổi thành công:
+   * - Thay đổi số ngày Julian thông qua phương thức setJdn
+   * - Thay đổi phần bù chênh lệnh giữa giờ địa phương so với UTC thông qua phương thức setOffset
    */
   protected reset() {
     this.localMidnightJdn = undefined;
