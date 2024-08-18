@@ -27,6 +27,11 @@ export class NewMoonPhase extends BaseJdn {
    * @inheritdoc
    */
   protected reset(): void {
+    /**
+     * Một khi giá trị số ngày Julian đầu vào hoặc phần bù chênh lệnh UTC bị thay đổi, các giá trị
+     * của tổng số chu kỳ Trăng mới và số ngày Julian tương ứng với điểm bắt đầu pha Trăng mới cần
+     * được tính toán lại.
+     */
     this.totalPhases = undefined;
     this.newMoonPhaseJdn = undefined;
 
@@ -48,7 +53,7 @@ export class NewMoonPhase extends BaseJdn {
    *                 K = (năm dương lịch - 1990) * 12.3685
    * @return number
    */
-  protected meanphase(jdn: number, k: number): number {
+  protected _getMeanPhase(jdn: number, k: number): number {
     const jt = (jdn - 2415020.0) / 36525;
     const t2 = jt * jt;
     const t3 = t2 * jt;
@@ -68,7 +73,7 @@ export class NewMoonPhase extends BaseJdn {
    *
    * @param float k
    */
-  protected truephase(k: number): number {
+  protected _getTruephase(k: number): number {
     const t = k / 1236.85;
     const t2 = t * t;
     const t3 = t2 * t;
@@ -106,39 +111,60 @@ export class NewMoonPhase extends BaseJdn {
   /**
    * Trả về tổng số pha Trăng mới đã qua kể từ 00:00 ngày 01 tháng 01 năm 1990 (UTC) cho đến thời
    * điểm đầu vào.
+   *
+   * @param jdn     số ngày Julian theo quy ước ngày mới bắt đầu vào 12 giờ trưa UTC
+   * @param offset  phần bù chênh lệnh giờ địa phương so với UTC, tính bằng giây
+   */
+  protected _getTotalPhase(jdn: number, offset: number) {
+    const sdate = jdn + 1;
+    const gre = GregoryDateTimeStorage.fromDate(
+      new BaseJdn(sdate - 45, offset).toGregorian(),
+    );
+
+    let k1 = Math.floor(
+      (gre.year() + (gre.month() - 1) * (1 / 12) - 1900) * 12.3685,
+    );
+    let nt1 = this._getMeanPhase(Math.floor(sdate - 45), k1);
+    let adate = nt1;
+
+    while (true) {
+      const k2 = k1 + 1;
+      adate += SYN_MOON;
+
+      let nt2 = this._getMeanPhase(Math.floor(adate), k2);
+
+      if (Math.abs(nt2 - sdate) < 0.75) {
+        nt2 = this._getTruephase(k2);
+      }
+
+      if (nt1 <= sdate && nt2 > sdate) {
+        break;
+      }
+
+      nt1 = nt2;
+      k1 = k2;
+    }
+
+    return k1;
+  }
+
+  /**
+   * Trả về số ngày Julian đầu vào
+   */
+  getInputJdn() {
+    return super.getJdn();
+  }
+
+  /**
+   * Trả về tổng số pha Trăng mới đã qua kể từ 00:00 ngày 01 tháng 01 năm 1990 (UTC) cho đến thời
+   * điểm đầu vào.
    */
   getTotalPhases() {
     if (this.totalPhases === undefined) {
-      const sdate = super.getJdn() + 1;
-      const gre = GregoryDateTimeStorage.fromDate(
-        new BaseJdn(sdate - 45, this.getOffset()).toGregorian(),
+      this.totalPhases = this._getTotalPhase(
+        this.getInputJdn(),
+        this.getOffset(),
       );
-
-      let k1 = Math.floor(
-        (gre.year() + (gre.month() - 1) * (1 / 12) - 1900) * 12.3685,
-      );
-      let nt1 = this.meanphase(Math.floor(sdate - 45), k1);
-      let adate = nt1;
-
-      while (true) {
-        const k2 = k1 + 1;
-        adate += SYN_MOON;
-
-        let nt2 = this.meanphase(Math.floor(adate), k2);
-
-        if (Math.abs(nt2 - sdate) < 0.75) {
-          nt2 = this.truephase(k2);
-        }
-
-        if (nt1 <= sdate && nt2 > sdate) {
-          break;
-        }
-
-        nt1 = nt2;
-        k1 = k2;
-      }
-
-      this.totalPhases = k1;
     }
 
     return this.totalPhases;
@@ -149,7 +175,7 @@ export class NewMoonPhase extends BaseJdn {
    */
   getJdn(): number {
     if (this.newMoonPhaseJdn === undefined) {
-      this.newMoonPhaseJdn = this.truephase(this.getTotalPhases());
+      this.newMoonPhaseJdn = this._getTruephase(this.getTotalPhases());
     }
 
     return this.newMoonPhaseJdn;
