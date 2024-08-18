@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { BaseJdn } from "../../src/astronomy/BaseJdn";
+import { BaseJdn, EPOCH_JDN } from "../../src/astronomy/BaseJdn";
 import { GregoryDateTimeStorage } from "../../src/storages/GregoryDateTimeStorage";
 
 describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
@@ -174,5 +174,12 @@ describe("Kiểm tra lớp xử lý JDN cơ sở", () => {
     expect(gre3.minute).toBe(59);
     expect(gre3.second).toBe(59);
     expect(gre3.offset).toBe(0);
+  });
+
+  test("Khởi tạo từ đối tượng Jdn", () => {
+    const jdn = BaseJdn.fromJdn(new BaseJdn(EPOCH_JDN + 10, 100));
+
+    expect(jdn.getJdn()).toBe(EPOCH_JDN + 10);
+    expect(jdn.getOffset()).toBe(100);
   });
 });

@@ -1,11 +1,13 @@
 import { GregoryDateTimeStorage } from "../storages/GregoryDateTimeStorage";
 import { Jdn, SimpleDateTime } from "../types";
 
+export const EPOCH_JDN = 2440587.5;
+
 /**
  * Lớp truy xuất giá trị JDN cơ bản
  */
-class BaseJdn implements Jdn {
-  private jdn: number = 2440587.5;
+export class BaseJdn implements Jdn {
+  private jdn: number = EPOCH_JDN;
   private offset: number = 0;
   private localMidnightJdn?: number;
 
@@ -234,6 +236,15 @@ class BaseJdn implements Jdn {
 
     return new this(jdn, date.offset());
   }
-}
 
-export { BaseJdn };
+  /**
+   * Tạo nhanh đối tượng từ một đối tượng triển khai giao diện Jdn. Điều này hữu ích khi các lớp mở
+   * rộng sử dụng một mốc ngày julian đã được tính toán để làm đầu vào.
+   */
+  public static fromJdn<T extends BaseJdn>(
+    this: new (jdn: number, offset: number) => T,
+    j: Jdn,
+  ): T {
+    return new this(j.getJdn(), j.getOffset());
+  }
+}
