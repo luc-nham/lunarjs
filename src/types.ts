@@ -70,6 +70,12 @@ export type SimpleDateTime = {
 };
 
 /**
+ * Đối tượng lưu trữ các mốc thời gian cơ bản với các giá trị đầy đủ, thường được sử dụng để tạo đầu
+ * ra từ các bộ chuyển đổi
+ */
+export type RequiredSimpleDateTime = Required<SimpleDateTime>;
+
+/**
  * Bộ chuyển đổi dữ liệu đầu vào - đầu ra
  */
 export interface Converter<I, O> {
@@ -78,3 +84,13 @@ export interface Converter<I, O> {
    */
   convert(input: I): O;
 }
+
+/**
+ * Pha Trăng mới - điểm Sóc
+ */
+export type NewMoonPhase = Jdn & {
+  /**
+   * Tổng số chu kỳ trăng đã qua kể từ 1900-01-01T00:00+0000 cho đến thời điểm đầu vào
+   */
+  total: number;
+};
