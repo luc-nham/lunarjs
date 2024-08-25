@@ -4,15 +4,7 @@ import { SimpleDateTime } from "../../src/types";
 
 describe("Kiểm tra chuyển đổi một mốc lịch Gregory sang số ngày Julian", () => {
   const c = new GregorianToJdn();
-  const input: Required<SimpleDateTime> = {
-    day: 1,
-    month: 1,
-    year: 1970,
-    hour: 0,
-    minute: 0,
-    offset: 0,
-    second: 0,
-  };
+  const input: SimpleDateTime = {};
 
   test("1970-01-01 00:00 +0000 | JDN = 2440587.5", () => {
     const ouput = c.convert(input);
