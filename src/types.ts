@@ -94,3 +94,18 @@ export type NewMoonPhase = Jdn & {
    */
   total: number;
 };
+
+/**
+ * Pha trăng mới của tháng đầu tiên của năm Âm lịch
+ */
+export type LunarFirstNewMoonPhase = NewMoonPhase & {
+  /**
+   * Năm Âm lịch
+   */
+  year: number;
+
+  /**
+   * Xác định năm âm lịch nhuận
+   */
+  leap: boolean;
+};
