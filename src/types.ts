@@ -109,3 +109,16 @@ export type LunarFirstNewMoonPhase = NewMoonPhase & {
    */
   leap: boolean;
 };
+
+/**
+ * Pha trăng mới của tháng nhuận Âm lịch
+ */
+export type LunarLeapMonth = NewMoonPhase & {
+  /**
+   * Số tháng nhuận Âm lịch. Không giống như Dương lịch, trong năm nhuận Âm lịch tháng nhuận có thể
+   * bất kỳ trong khoảng 2 đến 11. Đôi khi, múi giờ khác nhau sẽ dẫn đến ngày tháng nhuận khác nhau
+   * ở mỗi địa phương. Điều này là do tháng nhuận Âm lịch sử dụng cả Kinh độ Mặt trời kết hợp với
+   * điểm Sóc của tháng để tính toán
+   */
+  month: number;
+};
