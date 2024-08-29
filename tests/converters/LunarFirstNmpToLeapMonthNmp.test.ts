@@ -31,8 +31,9 @@ describe("Kiểm tra danh sách năm nhuận Âm lịch", () => {
 
       expect(leap).toBeDefined();
 
+      expect(leap?.month).toBe(v.month);
+
       if (leap !== undefined) {
-        expect(leap.month).toBe(v.month);
         expect(jd2mljd.convert(leap).jdn).toBe(parseFloat(v.jd.toFixed(6)));
       }
     });
@@ -54,13 +55,36 @@ describe("Kiểm tra danh sách năm nhuận Âm lịch", () => {
 
     expect(unleap).toBe(undefined);
   });
+
+  /**
+   * @link https://github.com/luc-nham/lunarjs/issues/10
+   */
+  test("Input: 2033-11-22 23:59:59 +0700", () => {
+    const leap = fnmp2leapnmp.convert(
+      nmp2firstnmp.convert(
+        jd2nmp.convert(
+          gre2jd.convert({
+            day: 22,
+            month: 11,
+            year: 2033,
+            hour: 23,
+            minute: 59,
+            second: 59,
+            offset: 25200,
+          }),
+        ),
+      ),
+    );
+
+    expect(leap?.month).toBe(11);
+  });
 });
 
 /**
  * Danh sách các năm và tháng nhuận Âm lịch Việt Nam trong khoảng thời gian từ 1900 đến 2100
  */
 const _1900_2100_25200 = [
-  //{ year: 1900, month: 8, jd: 2415286.2083333 },
+  { year: 1900, month: 8, jd: 2415286.2083333 },
   {
     year: 1903,
     month: 5,
