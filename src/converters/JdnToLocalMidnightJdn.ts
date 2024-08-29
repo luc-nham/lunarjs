@@ -15,7 +15,7 @@ export class JdnToLocalMidnightJdn implements Converter<Jdn, Jdn> {
   protected _toLocalMidnightJdn(input: Jdn) {
     const { jdn, offset } = input;
 
-    const diff = jdn - Math.floor(jdn);
+    const diff = parseFloat((jdn - Math.floor(jdn)).toFixed(6));
     const utcMidnight =
       diff >= 0.5 ? Math.floor(jdn) + 0.5 : Math.floor(jdn) - 0.5;
 
@@ -23,14 +23,20 @@ export class JdnToLocalMidnightJdn implements Converter<Jdn, Jdn> {
       return utcMidnight;
     }
 
-    const decimal = 1 - offset / 86400;
+    const diff2 = parseFloat((offset / 86400).toFixed(6));
+
+    if (diff === 0.5 - diff2) {
+      return jdn;
+    }
+
+    const decimal = 1 - diff2;
 
     const midnight =
       jdn >= utcMidnight + decimal
         ? utcMidnight + decimal
         : utcMidnight + decimal - 1;
 
-    return parseFloat(midnight.toFixed(6));
+    return midnight;
   }
 
   /**
