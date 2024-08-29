@@ -49,8 +49,9 @@ export class LunarFirstNmpToLeapMonthNmp extends BaseNewMoonPhase<
      * chúng cho ra giá trị bằng nhau thì tháng đó là tháng nhuận. Chẳng hạn, góc KDMT của điểm Sóc
      * 1 là 150.123 (150.123 / 30 = 5), điểm Sóc của tháng kế tiếp nó là 179.321 (179.321 / 30 = 5).
      *
-     * 6. Trường hợp trong 1 năm có nhiều tháng không chứa Trung khí (5), thì tháng đầu tiên (nhỏ
-     * hơn) được sử dụng làm tháng nhuận.
+     * 6. Trường hợp trong 1 năm có nhiều tháng không chứa Trung khí (5), nếu tháng sau tháng 11
+     * thường là tháng nhuận, thì năm đó nhuận tháng 11, nếu không, thì dùng tháng đầu tiên đáp
+     * ứng điều kiện.
      */
 
     if (!input.leap) {
@@ -60,6 +61,7 @@ export class LunarFirstNmpToLeapMonthNmp extends BaseNewMoonPhase<
     const { offset } = input;
     const slc = new JdnToSunlongitude();
     const mjc = new JdnToLocalMidnightJdn();
+    const result: LunarLeapMonth[] = [];
 
     let phases = input.total + 2;
     let month = 1;
@@ -74,12 +76,18 @@ export class LunarFirstNmpToLeapMonthNmp extends BaseNewMoonPhase<
       const sl = Math.floor(slc.convert(mjc.convert(nmp)) / 30);
 
       if (nextSl === sl) {
-        break;
+        result.push({ ...nmp, ...{ month: month } });
       }
 
       nmp = nextNmp;
     }
 
-    return { ...nmp, ...{ month: month } };
+    let leap = result.find((l) => l.month === 11);
+
+    if (!leap) {
+      leap = result[0];
+    }
+
+    return leap;
   }
 }
