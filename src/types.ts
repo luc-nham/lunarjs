@@ -122,3 +122,30 @@ export type LunarLeapMonth = NewMoonPhase & {
    */
   month: number;
 };
+
+/**
+ * Lưu trữ các giá trị cần thiết của một mốc thời gian Âm lịch, thường dùng làm đầu ra từ các bộ
+ * chuyển đổi
+ */
+export type LunarDateTime = RequiredSimpleDateTime &
+  Jdn & {
+    /**
+     * Xác định năm Âm lịch có nhuận hay không
+     */
+    isLeapYear: boolean;
+
+    /**
+     * Xác định tháng hiện tại có phải tháng nhuận không
+     */
+    isLeapMonth: boolean;
+
+    /**
+     * Xác định vị trí tháng nhuận. Nếu 0 tức năm đó không có tháng nhuận
+     */
+    leapMonth: number;
+
+    /**
+     * Xác định tổng số ngày của tháng Âm lịch hiện tại: 29 tương ứng tháng thiếu, 30 là tháng đủ
+     */
+    dayOfMonth: number;
+  };
