@@ -54,4 +54,19 @@ describe("Kiểm tra chuyển đổi mốc ngày Julian thành mốc Julian nử
     expect(ouput.jdn).toBe(2440587.208333);
     expect(ouput.offset).toBe(25200);
   });
+
+  /**
+   * @link https://github.com/luc-nham/lunarjs/issues/8
+   */
+  test("1970-01-01 00:00 +0700 | Midnight JDN = 2440587.208333", () => {
+    const input = gtj.convert({
+      offset: 25200,
+      year: 1970,
+      day: 1,
+      month: 1,
+    });
+    const ouput = jtm.convert(input);
+
+    expect(ouput.jdn).toBe(2440587.208333);
+  });
 });
