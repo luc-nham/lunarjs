@@ -116,7 +116,7 @@ export function jdToGregorian(
 
   const jd = jdn + toFloat(offset / 86400);
 
-  // Ngày tháng năm
+  // Day - Month - Year
   let j = Math.floor(jd);
 
   if (jd - j >= 0.5) {
@@ -148,7 +148,7 @@ export function jdToGregorian(
   storage.month = m;
   storage.year = y;
 
-  // Giờ phút giây
+  // Hours- Seconds - Minutes
   const totalSec = Math.ceil((jdn - Math.floor(jdn)) * 86400 + offset + 43200);
 
   const h = Math.floor(totalSec / 3600) % 24;
