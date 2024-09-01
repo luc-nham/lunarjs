@@ -92,3 +92,73 @@ export function jdToLocalMidnightJd(jdn: number, offset: number = 0) {
 
   return midnight;
 }
+
+/**
+ * Converts a Julian day number to the corresponding Gregorian calendar.
+ *
+ * @param jdn       Julian day number
+ * @param offset    Difference between local time and UTC, in seconds. Default 0 mean UTC,
+ *                  otherwise, returns local time
+ */
+export function jdToGregorian(
+  jdn: number,
+  offset: number = 0,
+): RequiredSimpleDateTime {
+  const storage: RequiredSimpleDateTime = {
+    day: 1,
+    month: 1,
+    year: 1970,
+    hour: 0,
+    minute: 0,
+    second: 0,
+    offset: offset,
+  };
+
+  const jd = jdn + toFloat(offset / 86400);
+
+  // Ngày tháng năm
+  let j = Math.floor(jd);
+
+  if (jd - j >= 0.5) {
+    j += 1;
+  }
+
+  j -= 1721119;
+
+  let y = Math.floor((4 * j - 1) / 146097);
+  j = 4 * j - 1 - 146097 * y;
+
+  let d = Math.floor(j / 4);
+  j = Math.floor((4 * d + 3) / 1461);
+  d = 4 * d + 3 - 1461 * j;
+  d = Math.floor((d + 4) / 4);
+  let m = Math.floor((5 * d - 3) / 153);
+  d = 5 * d - 3 - 153 * m;
+  d = Math.floor((d + 5) / 5);
+  y = 100 * y + j;
+
+  if (m < 10) {
+    m += 3;
+  } else {
+    m -= 9;
+    y += 1;
+  }
+
+  storage.day = d;
+  storage.month = m;
+  storage.year = y;
+
+  // Giờ phút giây
+  const totalSec = Math.ceil((jdn - Math.floor(jdn)) * 86400 + offset + 43200);
+
+  const h = Math.floor(totalSec / 3600) % 24;
+  const i = Math.floor(totalSec / 60) % 60;
+  const s = Math.floor(totalSec % 60);
+
+  storage.hour = h;
+  storage.minute = i;
+  storage.second = s;
+  storage.offset = offset;
+
+  return storage;
+}
