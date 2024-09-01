@@ -61,3 +61,34 @@ export function gregorianToJd(input: SimpleDateTime = {}) {
 
   return jdn;
 }
+
+/**
+ * Converts a Julian day number to a Julian day number at midnight local time.
+ *
+ * @param jdn       Julian day number correspond to any time of day.
+ * @param offset    Difference between local time and UTC, in seconds, default 0 mean UTC.
+ */
+export function jdToLocalMidnightJd(jdn: number, offset: number = 0) {
+  const diff = toFloat(jdn - Math.floor(jdn));
+  const utcMidnight =
+    diff >= 0.5 ? Math.floor(jdn) + 0.5 : Math.floor(jdn) - 0.5;
+
+  if (offset === 0) {
+    return utcMidnight;
+  }
+
+  const diff2 = toFloat(offset / 86400);
+
+  if (diff === 0.5 - diff2) {
+    return jdn;
+  }
+
+  const decimal = 1 - diff2;
+
+  const midnight =
+    jdn >= utcMidnight + decimal
+      ? utcMidnight + decimal
+      : utcMidnight + decimal - 1;
+
+  return midnight;
+}
