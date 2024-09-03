@@ -1,21 +1,21 @@
 import { RequiredSimpleDateTime, SimpleDateTime } from "./types";
 
 /**
- * Cố định phần thập phân của một số dấu động.
+ * Fix the decimal part of a floating number.
  *
- * @param num   Số mục tiêu
- * @param quan  Số lượng phần thập phân, mặc định 6
+ * @param num   Target number
+ * @param quan  Output decimal amount, default 6
  */
 export function toFloat(num: number, quan: number = 6) {
   return parseFloat(num.toFixed(quan));
 }
 
 /**
- * Chuyển đổi một mốc thời gian Dương lịch - Gregorian sang số ngày Julian tương ứng.
+ * Converts a Gregorian date to the corresponding of Julian day number (JDN).
  *
- * @param input Đối tượng lưu trữ các mốc thời gian lịch Gregorian. Bất kỳ dữ kiện thời gian nào bị
- * thiếu sẽ được thay thế bổ sung bằng mốc thời gian 1970-01-01 00:00:00 +0000
- * @returns Số ngày Julian đầu ra tuân thủ quy ước ngày mới bắt đầu vào lúc 12 giờ trưa GMT+0.
+ * @param input Object that stores Gregorian calendar dates. Any missing data will be replaced with
+ *              1970-01-01 00:00:00 +0000
+ * @returns     The output JDN comply with the new date convention starting at 12 noon GMT+0.
  */
 export function gregorianToJd(input: SimpleDateTime = {}) {
   const {
