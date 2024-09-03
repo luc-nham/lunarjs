@@ -3,6 +3,9 @@ import {
   gregorianToJd,
   jdToGregorian,
   jdToLocalMidnightJd,
+  jdToNewMoonJd,
+  jdToTotalPhase,
+  totalPhaseToNewMoonJd,
 } from "../src/helper";
 import { SimpleDateTime } from "../src/types";
 
@@ -120,5 +123,62 @@ describe("Julian day number to Gregorian", () => {
     const gre = jdToGregorian(jd, input.offset);
 
     expect(gre).toStrictEqual(input);
+  });
+});
+
+/**
+ * Total Phase of new moon
+ */
+describe("Total phases of new moon", () => {
+  test("1900-01-01 +0000", () => {
+    const jdn = gregorianToJd({ year: 1900 });
+    expect(jdToTotalPhase(jdn)).toBe(0);
+  });
+
+  test("1900-02-01 +0000", () => {
+    const jdn = gregorianToJd({ year: 1900, month: 2 });
+    expect(jdToTotalPhase(jdn)).toBe(1);
+  });
+
+  test("1899-12-30 +0000", () => {
+    const jdn = gregorianToJd({ year: 1899, month: 12, day: 30 });
+    expect(jdToTotalPhase(jdn)).toBe(-1);
+  });
+});
+
+describe("New moon phase JDN", () => {
+  test("1900-01-01 +0000", () => {
+    const jd = gregorianToJd({ year: 1900 });
+    const nmjd = totalPhaseToNewMoonJd(0); // Midnight
+    const nmjd2 = totalPhaseToNewMoonJd(0, 0, false); // Exactly with the start of the new moon phase
+
+    expect(nmjd).toBe(jd);
+    expect(nmjd2).toBeGreaterThan(jd);
+    expect(nmjd2 - nmjd).toBeLessThan(1); // Same day
+  });
+
+  test("1900-01-01 +0700", () => {
+    const offset = 25200;
+    const jd = gregorianToJd({ year: 1900, offset });
+    const nmjd = totalPhaseToNewMoonJd(0, offset); // Midnight
+    const nmjd2 = totalPhaseToNewMoonJd(0, offset, false); // Exactly with the start of the new moon phase
+
+    expect(nmjd).toBe(jd);
+    expect(nmjd2).toBeGreaterThan(jd);
+    expect(nmjd2 - nmjd).toBeLessThan(1); // Same day
+  });
+});
+
+/**
+ * JDN to New moon phase JDN
+ */
+describe("Convert JDN to New moon phase JDN", () => {
+  test("1900-01-01 +0000 UTC", () => {
+    const jd = gregorianToJd({ year: 1900 });
+    const nmpJd = jdToNewMoonJd(jd);
+    const nmpJd2 = jdToNewMoonJd(jd + 10);
+
+    expect(nmpJd).toBe(jd);
+    expect(nmpJd2).toBe(jd);
   });
 });
