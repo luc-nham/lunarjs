@@ -1,151 +1,217 @@
-export type Jdn = {
-  /**
-   * Số ngày Julian tuân thủ theo 2 nguyên tắc:
-   * - Tương ứng với giờ UTC (GMT+0)
-   * - Ngày Julian mới bắt đầu vào lúc 12:00 trưa UTC. Ví dụ, tại thời điểm ngày 01 tháng 01 năm
-   * 1970 lúc 00:00 (bắt đầu một ngày mới theo lịch Gregory) số ngày Julian tương ứng 2440587.5,
-   * tức thuộc về ngày Julian hôm trước. Cùng ngày 01 tháng 01 năm 1970 nhưng vào lúc 12:00 (giữa
-   * trưa ngày Gregory), số ngày Julian sẽ là 2440588 (ngày mới).
-   *
-   * Việc áp đặt các quy tắc trên mặc dù sẽ làm việc tính toán lịch phức tạp hơn một chút, nhưng
-   * nó giúp giá trị Julian đầu ra tuân thủ theo các tiêu chuẩn chung của Quốc tế, do đó nó có thể
-   * được sử dụng cho nhiều mục đích rộng rãi hơn.
-   */
-  jdn: number;
-
-  /**
-   * Trả về phần bù chênh lệch giữa giờ địa phương so với giờ UTC, được tính bằng giây. Ví dụ,
-   * Việt Nam nằm ở múi giờ GMT+7 (tức chênh lệnh 7 giờ so với UTC), khi quy đổi ra số giây sẽ
-   * tương ứng 7 x 60 x 60 = 25200 giây.
-   *
-   * Phần chênh lệch này được sử dụng để tính toán ra số ngày Julian tương ứng với UTC khi đầu vào
-   * là giờ địa phương.
-   */
-  offset: number;
-};
-
 /**
- * Xác định đối tượng lưu trữ thời gian cơ bản, được sử dụng để tạo đầu vào nhanh chóng hoặc đầu ra
- * đơn giản mà không cần các bước khởi tạo phức tạp hay các phương thức không cần thiết. Ví dụ, một
- * bộ chuyển đổi hoặc kho lưu trữ có thể yêu cầu nhiều giá trị thời gian cho quá trình khởi tạo, khi
- * đó, truyền một đối tượng đơn giản này vào constructor sẽ thuận tiện hơn việc gọi nhiều setter.
- *
- * Mặc định, loại đối tượng này hỗ trợ các dạng giá trị thời gian theo lịch Gregory.
+ * An object that stores basic time, used as input and output for converters.
  */
-export type SimpleDateTime = {
+export interface SimpleDateTime {
   /**
-   * Ngày
+   * Number of day
    */
-  day?: number;
+  day: number;
 
   /**
-   * Tháng
+   * Number of month
    */
-  month?: number;
+  month: number;
 
   /**
-   * Năm
+   * Number of year
    */
-  year?: number;
+  year: number;
 
   /**
-   * Giờ
+   * Number of hour
    */
-  hour?: number;
+  hour: number;
 
   /**
-   * Phút
+   * Number of minute
    */
-  minute?: number;
+  minute: number;
 
   /**
-   * Giây
+   * Number of second
    */
-  second?: number;
-
-  /**
-   * Số giây bù chênh lệch giữa giờ địa phương so với UTC
-   */
-  offset?: number;
-};
-
-/**
- * Đối tượng lưu trữ các mốc thời gian cơ bản với các giá trị đầy đủ, thường được sử dụng để tạo đầu
- * ra từ các bộ chuyển đổi
- */
-export type RequiredSimpleDateTime = Required<SimpleDateTime>;
-
-/**
- * Bộ chuyển đổi dữ liệu đầu vào - đầu ra
- */
-export interface Converter<I, O> {
-  /**
-   * Chuyển đổi một loại dữ liệu đầu vào thành loại dữ liệu đầu ra tương ứng
-   */
-  convert(input: I): O;
+  second: number;
 }
 
 /**
- * Pha Trăng mới - điểm Sóc
+ * New moon phase
  */
-export type NewMoonPhase = Jdn & {
+export type NewMoonPhase = {
   /**
-   * Tổng số chu kỳ trăng đã qua kể từ 1900-01-01T00:00+0000 cho đến thời điểm đầu vào
+   * Julian day number corresponds to new moon begin point
+   */
+  jd: number;
+
+  /**
+   * Total number of new moon phases passed since 1900-01-01
    */
   total: number;
 };
 
 /**
- * Pha trăng mới của tháng đầu tiên của năm Âm lịch
+ * The new moon phase of Lunar first month (01), likes January of Gregorian calendar
  */
 export type LunarFirstNewMoonPhase = NewMoonPhase & {
   /**
-   * Năm Âm lịch
+   * Number of Lunar year
    */
   year: number;
 
   /**
-   * Xác định năm âm lịch nhuận
+   * Whether Lunar year is leap year
    */
   leap: boolean;
 };
 
 /**
- * Pha trăng mới của tháng nhuận Âm lịch
+ * The new moon phase of Lunar leap month if a year be leap.
  */
 export type LunarLeapMonth = NewMoonPhase & {
   /**
-   * Số tháng nhuận Âm lịch. Không giống như Dương lịch, trong năm nhuận Âm lịch tháng nhuận có thể
-   * bất kỳ trong khoảng 2 đến 11. Đôi khi, múi giờ khác nhau sẽ dẫn đến ngày tháng nhuận khác nhau
-   * ở mỗi địa phương. Điều này là do tháng nhuận Âm lịch sử dụng cả Kinh độ Mặt trời kết hợp với
-   * điểm Sóc của tháng để tính toán
+   * Number of leap month. A lunar leap month can be located in many number, from 2 to 11, and is
+   * different in each locality (related to time zone).
    */
   month: number;
 };
 
 /**
- * Lưu trữ các giá trị cần thiết của một mốc thời gian Âm lịch, thường dùng làm đầu ra từ các bộ
+ * An object that stores basic Lunar date time, used as input and output for converters.
+ */
+export interface SimpleLunarDateTime extends SimpleDateTime {
+  /**
+   * Julian days correspond to lunar date time.
+   */
+  jd: number;
+
+  /**
+   * Leap month property
+   */
+  leap: {
+    /**
+     * Month number to be leap, if 0, mean is not leap
+     */
+    month: number;
+
+    /**
+     * Check if current month is leap
+     */
+    current: boolean;
+  };
+
+  /**
+   * The total days of Lunar month
+   */
+  days: number;
+}
+
+/**
+ * Lưu trữ các giá trị cần thiết của một mốc thời gian Âm lịch, thường dùng làm đầu ra from các bộ
  * chuyển đổi
  */
-export type LunarDateTime = RequiredSimpleDateTime &
-  Jdn & {
-    /**
-     * Xác định năm Âm lịch có nhuận hay không
-     */
-    isLeapYear: boolean;
+export interface LunarDateTime extends SimpleLunarDateTime {
+  /**
+   * Xác định năm Âm lịch có nhuận hay không
+   */
+  isLeapYear: boolean;
 
-    /**
-     * Xác định tháng hiện tại có phải tháng nhuận không
-     */
-    isLeapMonth: boolean;
+  /**
+   * Xác định tháng hiện tại có phải tháng nhuận không
+   */
+  isLeapMonth: boolean;
 
-    /**
-     * Xác định vị trí tháng nhuận. Nếu 0 tức năm đó không có tháng nhuận
-     */
-    leapMonth: number;
+  /**
+   * Xác định vị trí tháng nhuận. Nếu 0 tức năm đó không có tháng nhuận
+   */
+  leapMonth: number;
 
-    /**
-     * Xác định tổng số ngày của tháng Âm lịch hiện tại: 29 tương ứng tháng thiếu, 30 là tháng đủ
-     */
-    dayOfMonth: number;
-  };
+  /**
+   * Xác định tổng số ngày của tháng Âm lịch hiện tại: 29 tương ứng tháng thiếu, 30 là tháng đủ
+   */
+  dayOfMonth: number;
+}
+
+/**
+ * An object can be uses to make a unsafe, unknow Lunar date time to be input
+ */
+export type LunarUnsafeInput = SimpleDateTime & {
+  /**
+   * Whether input month is leap
+   */
+  leapMonth?: boolean;
+};
+
+/**
+ * Main Lunar date time properties
+ */
+export interface LunarDate {
+  /**
+   * Return days of month, form 1 to 30
+   */
+  getDay(): number;
+
+  /**
+   * Return month, form 1 to 12
+   */
+  getMonth(): number;
+
+  /**
+   * Return year, from 1800 - 9999
+   */
+  getFullYear(): number;
+
+  /**
+   * Return hours, from 0 - 23
+   */
+  getHours(): number;
+
+  /**
+   * Return minutes, from 0 - 59
+   */
+  getMinutes(): number;
+
+  /**
+   * Return seconds, from 0 - 59
+   */
+  getSeconds(): number;
+
+  /**
+   * Return UTC offset
+   */
+  getTimezoneOffset(): number;
+
+  /**
+   * Return UNIX timestamp
+   */
+  getTimestamps(): number;
+
+  /**
+   * Return Julian day number
+   */
+  getJdn(): number;
+}
+
+export type Option = object;
+
+export type ToFixedOuput = Option & {
+  fixed: number;
+};
+
+export type BasedOnOffset = Option & {
+  offset: number;
+};
+
+export type ToFloorOuput = {
+  floor: boolean;
+};
+
+export type NewMoonNavigationOuputOption = ToFixedOuput & {
+  /**
+   * The number of new moon points to navigate next or previous
+   */
+  quantity: number;
+
+  /**
+   * Navigation types, next or previous
+   */
+  navigation: "next" | "previous";
+};

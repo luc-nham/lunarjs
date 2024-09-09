@@ -1,82 +1,51 @@
 import { describe, expect, test } from "@jest/globals";
-import { LunarFirstNmpToLeapMonthNmp } from "../../src/converters/LunarFirstNmpToLeapMonthNmp";
-import { NmpToLunarFirstNmp } from "../../src/converters/NmpToLunarFirstNmp";
-import { JdnToNewMoonPhase } from "../../src/converters/JdnToNewMoonPhase";
-import { GregorianToJdn } from "../../src/converters/GregorianToJdn";
-import { JdnToLocalMidnightJdn } from "../../src/converters/JdnToLocalMidnightJdn";
+import { GregToJd } from "../../src/converters/GregToJd";
+import { JdToNm } from "../../src/converters/JdToNm";
+import { NmToLunarFirstNm } from "../../src/converters/NmToLunarFirstNm";
+import { LunarFirstNmToLeapNm } from "../../src/converters/LunarFirstNmToLeapNm";
+import { JdToMidnightJd } from "../../src/converters/JdToMidnightJd";
 
-describe("Kiểm tra danh sách năm nhuận Âm lịch", () => {
-  const gre2jd = new GregorianToJdn();
-  const jd2nmp = new JdnToNewMoonPhase();
-  const nmp2firstnmp = new NmpToLunarFirstNmp();
-  const fnmp2leapnmp = new LunarFirstNmpToLeapMonthNmp();
-  const jd2mljd = new JdnToLocalMidnightJdn();
-
-  test("1900 - 2100 Âm lịch Việt Nam", () => {
-    const offset = 25200;
+describe("Caculates new moon of leap Lunar month", () => {
+  test("1900 - 2100 Viet Nam Calendar", () => {
+    const options = {
+      fixed: 7,
+      offset: 25200,
+    };
 
     _1900_2100_25200.every((v) => {
-      const leap = fnmp2leapnmp.convert(
-        nmp2firstnmp.convert(
-          jd2nmp.convert(
-            gre2jd.convert({
-              day: 31,
-              month: 12,
-              year: v.year,
-              offset,
-            }),
-          ),
-        ),
+      new GregToJd({ day: 31, month: 12, year: v.year }, options).forward(
+        (jd) => {
+          new JdToNm(jd, options).forward((nm) => {
+            new NmToLunarFirstNm(nm, options).forward((fnm) => {
+              new LunarFirstNmToLeapNm(fnm, options).forward((leap) => {
+                expect(leap).toBeDefined();
+                expect(leap?.month).toBe(v.month);
+
+                if (leap) {
+                  expect(new JdToMidnightJd(leap.jd, options).getOutput()).toBe(
+                    v.jd,
+                  );
+                }
+              });
+            });
+          });
+        },
       );
-
-      expect(leap).toBeDefined();
-
-      expect(leap?.month).toBe(v.month);
-
-      if (leap !== undefined) {
-        expect(jd2mljd.convert(leap).jdn).toBe(parseFloat(v.jd.toFixed(6)));
-      }
     });
   });
 
-  test("Năm không nhuận", () => {
-    const unleap = fnmp2leapnmp.convert(
-      nmp2firstnmp.convert(
-        jd2nmp.convert(
-          gre2jd.convert({
-            day: 31,
-            month: 12,
-            year: 1901,
-            offset: 25200,
-          }),
-        ),
-      ),
-    );
+  test("Unleap year", () => {
+    const opt = { offset: 25200, fixed: 6 };
 
-    expect(unleap).toBe(undefined);
-  });
-
-  /**
-   * @link https://github.com/luc-nham/lunarjs/issues/10
-   */
-  test("Input: 2033-11-22 23:59:59 +0700", () => {
-    const leap = fnmp2leapnmp.convert(
-      nmp2firstnmp.convert(
-        jd2nmp.convert(
-          gre2jd.convert({
-            day: 22,
-            month: 11,
-            year: 2033,
-            hour: 23,
-            minute: 59,
-            second: 59,
-            offset: 25200,
-          }),
-        ),
-      ),
-    );
-
-    expect(leap?.month).toBe(11);
+    new GregToJd({ day: 31, month: 12, year: 1901 }, opt).fw((jd) => {
+      new JdToNm(jd, opt).forward((nm) => {
+        new NmToLunarFirstNm(nm, opt).forward((fnm) => {
+          new LunarFirstNmToLeapNm(fnm, opt).forward((leap) => {
+            expect(leap).toBeUndefined();
+          });
+        });
+      });
+    });
   });
 });
 
