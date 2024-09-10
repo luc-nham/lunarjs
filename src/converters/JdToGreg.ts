@@ -1,6 +1,7 @@
 import { toFloat } from "../helper";
 import { BasedOnOffset, SimpleDateTime } from "../types";
 import { Converter } from "./Converter";
+import { JdToTime } from "./JdToTime";
 
 /**
  * Converter that converts a Julian day number to Gregorian date time
@@ -40,26 +41,12 @@ export class JdToGreg extends Converter<number, SimpleDateTime, BasedOnOffset> {
       year += 1;
     }
 
-    let totalSec =
-      (input - Math.floor(input)) * 86400 + this.getOption("offset") + 43200;
-
-    totalSec =
-      totalSec - Math.floor(totalSec) < 0.5
-        ? Math.floor(totalSec)
-        : Math.ceil(totalSec);
-
-    const hour = Math.floor(totalSec / 3600) % 24;
-    const minute = Math.floor(totalSec / 60) % 60;
-    const second = Math.floor(totalSec % 60);
-
-    return {
+    return new JdToTime(input, this.getOption()).forward((time) => ({
       day,
       month,
       year,
-      hour,
-      minute,
-      second,
-    };
+      ...time,
+    }));
   }
 
   /**
