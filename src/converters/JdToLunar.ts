@@ -8,6 +8,7 @@ import {
 import { Converter } from "./Converter";
 import { JdToMidnightJd } from "./JdToMidnightJd";
 import { JdToNm } from "./JdToNm";
+import { JdToTime } from "./JdToTime";
 import { LunarFirstNmToLeapNm } from "./LunarFirstNmToLeapNm";
 import { NewMoonNavigator } from "./NewMoonNavigator";
 import { NmToLunarFirstNm } from "./NmToLunarFirstNm";
@@ -80,20 +81,18 @@ export class JdToLunar extends Converter<
       mjdc.in(nm.jd).fw((jd) => ({ ...nm, ...{ jd } })),
     );
 
-    return {
+    return new JdToTime(input, opt).forward((time) => ({
       day: mjd - nm.jd + 1,
       month: this._month(nm, fnm, lnm),
       year: fnm.year,
-      hour: 0,
-      minute: 0,
-      second: 0,
       leap: {
         current: Boolean(lnm && lnm.total === nm.total),
         month: lnm ? lnm.month : 0,
       },
       days: nm2.jd - nm.jd,
       jd: input,
-    };
+      ...time,
+    }));
   }
 
   /**
