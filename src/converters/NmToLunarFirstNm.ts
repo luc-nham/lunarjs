@@ -35,6 +35,10 @@ export class NmToLunarFirstNm extends ToNewMoon<
     let total = Math.round(diff * 12 + sub * 7 + 1);
     let year = gy;
 
+    /**
+     * In each of the 19 lunar years, when encountering non-leap years in positions 2, 5, and 13,
+     * errors need to be corrected to get correct results.
+     */
     const diff2 = parseFloat((abssub - Math.floor(abssub)).toFixed(2));
     const correction = [0.05, 0.63, 0.21];
 
