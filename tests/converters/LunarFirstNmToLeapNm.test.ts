@@ -12,7 +12,7 @@ describe("Caculates new moon of leap Lunar month", () => {
       offset: 25200,
     };
 
-    _1900_2100_25200.every((v) => {
+    _1900_2100_25200.forEach((v) => {
       new GregToJd({ day: 31, month: 12, year: v.year }, options).forward(
         (jd) => {
           new JdToNm(jd, options).forward((nm) => {
