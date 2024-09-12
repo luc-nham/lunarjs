@@ -2,6 +2,7 @@ import { describe, expect, test } from "@jest/globals";
 import { GregToJd } from "../../src/converters/GregToJd";
 import { JdToNm } from "../../src/converters/JdToNm";
 import { NmToLunarFirstNm } from "../../src/converters/NmToLunarFirstNm";
+import { _1900_2100 } from "../data/lunar-fisrt-new-moon";
 
 const leap = (y: number) => [0, 3, 6, 9, 11, 14, 17].includes(y % 19);
 
@@ -113,5 +114,59 @@ describe("Kiểm tra chuyển đổi pha Trăng mới thành pha Trăng mới đ
         });
       },
     );
+  });
+
+  /**
+   * Issue #13
+   *
+   * @link https://github.com/luc-nham/lunarjs/issues/13
+   */
+  test("Date: 1970-01-01 | Lunar: 1969-11-24", () => {
+    new GregToJd({ day: 1, month: 1, year: 1970 }, { offset: 25200 }).forward(
+      (jd, opt) => {
+        new JdToNm(jd, opt).forward((nm) => {
+          new NmToLunarFirstNm(nm, opt).forward((fnm) => {
+            expect(fnm.jd).toBe(2440269.18583);
+            expect(fnm.total).toBe(855);
+            expect(fnm.year).toBe(1969);
+            expect(fnm.leap).toBe(false);
+          });
+        });
+      },
+    );
+  });
+
+  /**
+   * Issue #13
+   *
+   * @link https://github.com/luc-nham/lunarjs/issues/13
+   */
+  test("List from 1900-2100 Viet Nam Lunar Caleandar", () => {
+    const opt = {
+      fixed: 4,
+      offset: 25200,
+    };
+    const toFloat = (number: string) =>
+      parseFloat(Number(number).toFixed(opt.fixed));
+
+    _1900_2100.forEach((data) => {
+      const gre = data.gregorian.split("-");
+      const [day, month] = gre;
+      const [year] = gre[2].split(" ");
+      const [cjd] = data.jd.split(" | ");
+
+      new GregToJd(
+        { day: Number(day), month: Number(month), year: Number(year) },
+        opt,
+      ).forward((jd) => {
+        new JdToNm(jd, opt).forward((nm) => {
+          new NmToLunarFirstNm(nm, opt).forward((fnm) => {
+            expect(fnm.jd).toBe(toFloat(cjd));
+            expect(fnm.total).toBe(data.total);
+            expect(fnm.year).toBe(Number(year));
+          });
+        });
+      });
+    });
   });
 });

@@ -29,9 +29,18 @@ export class NmToLunarFirstNm extends ToNewMoon<
     }).getOutput();
 
     const diff = gy - 1900;
+    const sub = diff / 19;
+    const abssub = Math.abs(sub);
 
-    let total = Math.round(diff * 12 + (diff / 19) * 7 + 1);
+    let total = Math.round(diff * 12 + sub * 7 + 1);
     let year = gy;
+
+    const diff2 = parseFloat((abssub - Math.floor(abssub)).toFixed(2));
+    const correction = [0.05, 0.63, 0.21];
+
+    if (correction.includes(diff2)) {
+      total += 1;
+    }
 
     if (input.total < total) {
       if (month !== 12) {
