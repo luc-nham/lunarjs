@@ -82,7 +82,7 @@ export class JdToLunar extends Converter<
     );
 
     return new JdToTime(input, opt).forward((time) => ({
-      day: mjd - nm.jd + 1,
+      day: Math.floor(mjd - nm.jd + 1),
       month: this._month(nm, fnm, lnm),
       year: fnm.year,
       leap: {

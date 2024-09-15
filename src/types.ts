@@ -180,9 +180,9 @@ export interface LunarDate {
   getTimezoneOffset(): number;
 
   /**
-   * Return UNIX timestamp
+   * Returns the stored time value in milliseconds since midnight, January 1, 1970 UTC
    */
-  getTimestamps(): number;
+  getTime(): number;
 
   /**
    * Return Julian day number
