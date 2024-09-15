@@ -1,2 +1,8 @@
 # lunarjs
- Âm lịch Việt Nam
+A Lunar calendar library
+
+## Install
+`npm i @lucnham/lunarjs` or `pnpm i @lucnham/lunarjs`
+
+## Basis usage
+See `tests` derectory.
