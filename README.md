@@ -5,4 +5,4 @@ A Lunar calendar library
 `npm i @lucnham/lunarjs` or `pnpm i @lucnham/lunarjs`
 
 ## Basis usage
-See `tests` derectory.
+See `tests` directory.
