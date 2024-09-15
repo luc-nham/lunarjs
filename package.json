@@ -1,5 +1,5 @@
 {
-  "name": "lunardate-js",
+  "name": "@lucnham/lunardate-js",
   "version": "1.0.0",
   "description": "Âm Lịch Việt Nam",
   "main": "dist/index.js",
