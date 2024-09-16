@@ -188,6 +188,21 @@ export interface LunarDate {
    * Return Julian day number
    */
   getJdn(): number;
+
+  /**
+   * Check if current year is a leap year
+   */
+  isLeapYear(): boolean;
+
+  /**
+   * Check if current month is a leap month
+   */
+  isLeapMonth(): boolean;
+
+  /**
+   * Get leap month number, returns 0 if there is no leap month
+   */
+  getLeapMonth(): number;
 }
 
 export type Option = object;

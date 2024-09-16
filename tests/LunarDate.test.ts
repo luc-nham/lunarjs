@@ -46,6 +46,10 @@ describe("Lunar date time test", () => {
     expect(lunar.getHours()).toBe(1);
     expect(lunar.getMinutes()).toBe(41);
     expect(lunar.getSeconds()).toBe(35);
+
+    expect(lunar.isLeapYear()).toBe(false);
+    expect(lunar.isLeapMonth()).toBe(false);
+    expect(lunar.getLeapMonth()).toBe(0);
   });
 
   test("Create instance form Lunar", () => {
