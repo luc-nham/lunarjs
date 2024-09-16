@@ -115,6 +115,27 @@ export class LunarDate implements LunarDateInterface {
   }
 
   /**
+   * @inheritdoc
+   */
+  isLeapYear(): boolean {
+    return this.get("leap").month !== 0;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isLeapMonth(): boolean {
+    return this.get("leap").current;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getLeapMonth(): number {
+    return this.get("leap").month;
+  }
+
+  /**
    * Quick create current Lunar date time
    */
   public static now() {
