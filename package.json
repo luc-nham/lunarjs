@@ -1,6 +1,6 @@
 {
   "name": "@lucnham/lunarjs",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.2",
   "description": "A library that handles Lunar date time",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
