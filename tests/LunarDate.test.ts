@@ -82,4 +82,16 @@ describe("Lunar date time test", () => {
     expect(lunar.getFullYear()).toBe(1969);
     expect(lunar.getHours()).toBe(0);
   });
+
+  test("String format", () => {
+    const lunar = new LunarDate({
+      day: 20,
+      month: 10,
+      year: 2022,
+    });
+
+    expect(lunar.toDateString()).toBe("2022-10-20");
+    expect(lunar.toTimeString()).toBe("00:00:00 GMT+0000");
+    expect(lunar.toString()).toBe("2022-10-20 00:00:00 GMT+0000");
+  });
 });

@@ -2,9 +2,11 @@ import { DateToSimpleDateTime } from "./converters/DateToSimpleDateTime";
 import { GregToJd } from "./converters/GregToJd";
 import { JdToLunar } from "./converters/JdToLunar";
 import { LunarToJd } from "./converters/LunarToJd";
+import { BaseLunarToStringFormater } from "./formaters/BaseLunarToStringFormater";
 import {
   BasedOnOffset,
   LunarDate as LunarDateInterface,
+  LunarToStringFormater,
   LunarUnsafeInput,
   SimpleDateTime,
   SimpleLunarDateTime,
@@ -21,6 +23,8 @@ export class LunarDate implements LunarDateInterface {
     fixed: 6,
     offset: 0,
   };
+
+  private stringFormater: LunarToStringFormater;
 
   constructor(
     date?: Partial<LunarUnsafeInput> | number,
@@ -39,13 +43,27 @@ export class LunarDate implements LunarDateInterface {
         this.jd = new GregToJd(o, { offset: o.offset }).getOutput();
       });
     }
+
+    this.stringFormater = this._defaultStringFormater();
   }
 
+  protected _defaultStringFormater() {
+    return new BaseLunarToStringFormater(this.get());
+  }
+
+  protected get(): SimpleLunarDateTime;
   protected get<K extends keyof SimpleLunarDateTime>(
     k: K,
-  ): SimpleLunarDateTime[K] {
+  ): SimpleLunarDateTime[K];
+  protected get<K extends keyof SimpleLunarDateTime>(
+    k?: K,
+  ): SimpleLunarDateTime[K] | SimpleLunarDateTime {
     if (!this.lunar) {
       this.lunar = new JdToLunar(this.jd, this.options).getOutput();
+    }
+
+    if (!k) {
+      return this.lunar;
     }
 
     return this.lunar[k];
@@ -133,6 +151,27 @@ export class LunarDate implements LunarDateInterface {
    */
   getLeapMonth(): number {
     return this.get("leap").month;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  toDateString(): string {
+    return this.stringFormater.toDateString();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  toString(): string {
+    return this.stringFormater.toString();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  toTimeString(): string {
+    return this.stringFormater.toTimeString();
   }
 
   /**

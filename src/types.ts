@@ -138,7 +138,7 @@ export interface LunarToStringFormater {
 /**
  * Main Lunar date time properties
  */
-export interface LunarDate {
+export interface LunarDate extends LunarToStringFormater {
   /**
    * Return days of month, form 1 to 30
    */
