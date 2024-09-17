@@ -94,4 +94,13 @@ describe("Lunar date time test", () => {
     expect(lunar.toTimeString()).toBe("00:00:00 GMT+0000");
     expect(lunar.toString()).toBe("2022-10-20 00:00:00 GMT+0000");
   });
+
+  test("To Js Date object", () => {
+    const lunar = new LunarDate();
+    const date = lunar.toDate();
+    const date2 = new Date();
+
+    // Differential within 1000 milliseconds
+    expect(Math.abs(date2.getTime() - date.getTime())).toBeLessThan(1000);
+  });
 });

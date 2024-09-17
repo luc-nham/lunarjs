@@ -198,6 +198,11 @@ export interface LunarDate extends LunarToStringFormater {
    * Get leap month number, returns 0 if there is no leap month
    */
   getLeapMonth(): number;
+
+  /**
+   * Create a Javascript Date object instance corresponding to the Lunar Calendar
+   */
+  toDate(): Date;
 }
 
 export type Option = object;

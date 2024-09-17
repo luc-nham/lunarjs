@@ -170,6 +170,16 @@ export class LunarDate implements LunarDateInterface {
   /**
    * @inheritdoc
    */
+  toDate(): Date {
+    const date = new Date();
+    date.setTime(this.getTime());
+
+    return date;
+  }
+
+  /**
+   * @inheritdoc
+   */
   toTimeString(): string {
     return this.stringFormater.toTimeString();
   }
