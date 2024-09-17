@@ -1,5 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import { JdToLunar } from "../../src/converters/JdToLunar";
+import { GregToJd } from "../../src";
 
 describe("Coverts Julian day number to Lunar date time", () => {
   test("Jdn: 2440587.5 | Lunar: 1969-11-24 00:00 +0000 | (default)", () => {
@@ -40,6 +41,32 @@ describe("Coverts Julian day number to Lunar date time", () => {
         hour: 0,
         minute: 0,
         second: 0,
+      });
+    });
+  });
+
+  test("Current new moon greater than leap moth new moon", () => {
+    // Lunar 2025 leap month 6
+    const opts = {
+      offset: 25200,
+    };
+    new GregToJd(
+      {
+        day: 1,
+        month: 9,
+        year: 2025,
+      },
+      opts,
+    ).forward((j) => {
+      new JdToLunar(j, { offset: 25200 }).forward((lunar) => {
+        expect(lunar).toMatchObject({
+          day: 10,
+          month: 7,
+          year: 2025,
+          hour: 0,
+          minute: 0,
+          second: 0,
+        });
       });
     });
   });
