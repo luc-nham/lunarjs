@@ -15,6 +15,7 @@ import { LunarUnsafeToLunar } from "./converters/LunarUnsafeToLunar";
 import { NewMoonNavigator } from "./converters/NewMoonNavigator";
 import { NmToLunarFirstNm } from "./converters/NmToLunarFirstNm";
 import { ToNewMoon } from "./converters/ToNewMoon";
+import { BaseLunarToStringFormater } from "./formaters/BaseLunarToStringFormater";
 import { LunarDate } from "./LunarDate";
 
 export {
@@ -36,6 +37,9 @@ export {
   NewMoonNavigator,
   NmToLunarFirstNm,
   ToNewMoon,
+
+  // Formatters
+  BaseLunarToStringFormater,
 
   // Lunar Date Time classes
   LunarDate,
