@@ -46,7 +46,8 @@ export class LunarUnsafeToLunar extends Converter<
    * @inheritdoc
    */
   protected _makeOuput(input: LunarUnsafeInput): SimpleLunarDateTime {
-    const { day, leapMonth, month, year } = this._fillInput(input);
+    const { day, leapMonth, month, year, hour, minute, second } =
+      this._fillInput(input);
 
     const opt = this.getOption();
     const fnm = new GregToJd({ day: 31, month: 12, year }, opt).fw((jd) => {
@@ -85,7 +86,7 @@ export class LunarUnsafeToLunar extends Converter<
       return new JdToMidnightJd(nm.jd, opt).fw((jd) => ({ ...nm, ...{ jd } }));
     });
 
-    const jd = nm.jd + day - 1;
+    const jd = nm.jd + day - 1 + (hour + minute / 60 + second / 3600) / 24;
 
     return new JdToLunar(jd, opt).getOutput();
   }
