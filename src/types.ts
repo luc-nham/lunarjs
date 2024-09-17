@@ -105,32 +105,6 @@ export interface SimpleLunarDateTime extends SimpleDateTime {
 }
 
 /**
- * Lưu trữ các giá trị cần thiết của một mốc thời gian Âm lịch, thường dùng làm đầu ra from các bộ
- * chuyển đổi
- */
-export interface LunarDateTime extends SimpleLunarDateTime {
-  /**
-   * Xác định năm Âm lịch có nhuận hay không
-   */
-  isLeapYear: boolean;
-
-  /**
-   * Xác định tháng hiện tại có phải tháng nhuận không
-   */
-  isLeapMonth: boolean;
-
-  /**
-   * Xác định vị trí tháng nhuận. Nếu 0 tức năm đó không có tháng nhuận
-   */
-  leapMonth: number;
-
-  /**
-   * Xác định tổng số ngày của tháng Âm lịch hiện tại: 29 tương ứng tháng thiếu, 30 là tháng đủ
-   */
-  dayOfMonth: number;
-}
-
-/**
  * An object can be uses to make a unsafe, unknow Lunar date time to be input
  */
 export type LunarUnsafeInput = SimpleDateTime & {
@@ -139,6 +113,27 @@ export type LunarUnsafeInput = SimpleDateTime & {
    */
   leapMonth?: boolean;
 };
+
+/**
+ * 
+The formatter converts Lunar date time into commonly used time strings
+ */
+export interface LunarToStringFormater {
+  /**
+   * Returns a string representing the date portion of this date interpreted in the local timezone.
+   */
+  toDateString(): string;
+
+  /**
+   * Returns a string representing the time portion of this date interpreted in the local timezone.
+   */
+  toTimeString(): string;
+
+  /**
+   * Returns a string representing this date interpreted in the local timezone.
+   */
+  toString(): string;
+}
 
 /**
  * Main Lunar date time properties
